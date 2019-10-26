@@ -1,5 +1,9 @@
 package com.zipcodewilmington;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by leon on 1/29/18.
  */
@@ -25,7 +29,7 @@ public class StringArrayUtils {
      * @return last element in specified array
      */ // TODO
     public static String getLastElement(String[] array) {
-        return null;
+        return array[array.length -1];
     }
 
     /**
@@ -33,7 +37,7 @@ public class StringArrayUtils {
      * @return second to last element in specified array
      */ // TODO
     public static String getSecondToLastElement(String[] array) {
-        return null;
+        return array[array.length -2];
     }
 
     /**
@@ -42,6 +46,10 @@ public class StringArrayUtils {
      * @return true if the array contains the specified `value`
      */ // TODO
     public static boolean contains(String[] array, String value) {
+        for(int i = 0; i < array.length; i++){
+            if (array[i] == value) { return true; }
+        }
+//        System.out.print(value);
         return false;
     }
 
@@ -50,7 +58,22 @@ public class StringArrayUtils {
      * @return an array with identical contents in reverse order
      */ // TODO
     public static String[] reverse(String[] array) {
-        return null;
+/*        this was working for the reverse string, but was breaking the palindrome test
+            for (int i  = 0; i < array.length/2; i++){
+            String temp = array[i];
+            array[i] = array[array.length-1-i];
+            array[array.length-i-1] = temp;
+        }
+*/
+//changed to this method instead to make it work for the palindrome test
+        String[] result = new String[array.length];
+            for (int i =array.length-1; i>=0;i--){
+                result[array.length-1-i] = array[i];
+            }
+        System.out.print(array);
+            //why does print(array) give such a weird output? that's definitely not the array I'm trying to print....
+//        return array;
+        return result;
     }
 
     /**
@@ -58,6 +81,13 @@ public class StringArrayUtils {
      * @return true if the order of the array is the same backwards and forwards
      */ // TODO
     public static boolean isPalindromic(String[] array) {
+        String[] oldArray = array;
+        String[] newArray = reverse(array);
+
+        System.out.print(array);
+//        System.out.print(newArray);
+        if(Arrays.equals(oldArray,newArray)) {return true;}
+
         return false;
     }
 
@@ -66,7 +96,23 @@ public class StringArrayUtils {
      * @return true if each letter in the alphabet has been used in the array
      */ // TODO
     public static boolean isPangramic(String[] array) {
-        return false;
+        boolean[] pangram = new boolean[26];    //create a boolean array of true or false for each character in the alphabet
+        System.out.println(Arrays.toString(pangram));                                        //testing to verify java created an array of false values
+        String strArr = Arrays.toString(array); //create a single string from the array to search
+        int pIndex = 0;                         //create an index number to use inside the boolean array to note which letter we're talking about
+
+        for (int i = 0; i < strArr.length(); i++){                       //interate over each character in the string
+            if ('A' <= strArr.charAt(i) && strArr.charAt(i) <= 'Z')      //tests for capital letters
+                pIndex = strArr.charAt(i) - 'A';                         //sets the index to the slot for the letter found
+            else if('a' <= strArr.charAt(i) && strArr.charAt(i) <= 'z')  //tests for lowercase letters
+                pIndex = strArr.charAt(i) - 'a';                         //sets the index to the slot for the letter found
+            pangram[pIndex] = true;                                      //sets the marker for the letter found to true
+        }
+        System.out.println(Arrays.toString(pangram));        //test to verify that pangram properly checked each letter
+        for (int i = 0; i <= 25; i++)             //checks each slot of the pangram array
+            if (pangram[i] == false)         //checks to see if any slot in the array is false
+                return false;                     //for the first false found in the array, return false and end isPangramic
+        return true;                              //if it made it through the entire pangram array without finding any false, return true and end isPangramic
     }
 
     /**
@@ -75,7 +121,13 @@ public class StringArrayUtils {
      * @return number of occurrences the specified `value` has occurred
      */ // TODO
     public static int getNumberOfOccurrences(String[] array, String value) {
-        return 0;
+        int output = 0;
+        for(int i = 0; i < array.length; i++){
+            if(array[i].equals(value)){
+                output++;
+            }
+        }
+        return output;
     }
 
     /**
@@ -84,7 +136,15 @@ public class StringArrayUtils {
      * @return array with identical contents excluding values of `value`
      */ // TODO
     public static String[] removeValue(String[] array, String valueToRemove) {
-        return null;
+        String[] output = new String[array.length-getNumberOfOccurrences(array, valueToRemove)];
+        int count = 0;
+        for(int i = 0; i < array.length; i++){
+            if(array[i] != valueToRemove){
+                output[count] = array[i];
+                count++;
+            }
+        }
+        return output;
     }
 
     /**
@@ -92,7 +152,18 @@ public class StringArrayUtils {
      * @return array of Strings with consecutive duplicates removes
      */ // TODO
     public static String[] removeConsecutiveDuplicates(String[] array) {
-        return null;
+        ArrayList<String> list = new ArrayList<String>();
+        for(int i = 0; i < array.length-1; i++){
+            if(array[i] != array[i+1]){
+                list.add(array[i]);
+            }
+        }
+            list.add(array[array.length-1]);
+        String output[] = new String[list.size()];
+        for (int j = 0; j < list.size(); j++){
+            output[j] = list.get(j);
+        }
+        return output;
     }
 
     /**
@@ -100,7 +171,54 @@ public class StringArrayUtils {
      * @return array of Strings with each consecutive duplicate occurrence concatenated as a single string in an array of Strings
      */ // TODO
     public static String[] packConsecutiveDuplicates(String[] array) {
-        return null;
+        ArrayList<String> list = new ArrayList<String>();
+        String temp = "";
+        String temp2 = "";
+        int count = 1;
+        for(int i = 1; i < array.length; i++){
+            temp = array[i];
+            while (temp == array[i-1]) {
+                count++;
+                i++;
+            }
+            for (int j = 0; j < count; j++){
+                temp2 += temp;
+            }
+            list.add(temp2);
+            temp2 = "";
+            count = 1;
+
+//          second attempt
+//            for(int i = 0; i < array.length; i++){
+//                temp = array[i];
+//                if (i < array.length-1){
+//                    while (temp == array[i+1]) {
+//                        count++;
+//                        if (i >= array.length-1) {break;}
+//                        i++;
+//                    }
+//                }
+//                for (int j = 0; j < count; j++){
+//                    temp2 += temp;
+//                }
+//                list.add(temp2);
+//                temp2 = "";
+//                count = 1;
+
+//          first attempt
+//            temp = array[i];
+//            if (i < array.length-1){
+//                if (temp == array[i-1]) {
+//                    count++;
+//            }else{
+//                for (int n = 0; n <= count; n++){
+//                    temp += temp;
+//                    count = 0;
+//                }
+//                list.add(temp);
+//            }
+        }
+        return list.toArray(new String[list.size()]);
     }
 
 

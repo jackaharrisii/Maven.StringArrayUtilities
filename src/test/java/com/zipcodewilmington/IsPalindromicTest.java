@@ -28,6 +28,7 @@ public class IsPalindromicTest {
         String[] array = {"Is this a plaindrome?", "This is not a plaindrome", "Is this a palindrome?", "This is not a palindrome"};
         boolean outcome = StringArrayUtils.isPalindromic(array);
         Assert.assertFalse(outcome);
+        System.out.print(array);
     }
 
 
